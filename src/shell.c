@@ -167,16 +167,16 @@ int special_commands(char **argv, pid_t ppid) {
         alarm(secs);
         return 1;
     }
-    if (!strcmp("alarm", argv[0]))
-        if (!strcmp("cd", argv[0])) {
-            if (argv[1]) {
-                if (chdir(argv[1]) == -1)
-                    fprintf(stderr, "%s: cd: %s: %s\n", getenv("SHELL"),
-                            argv[1], strerror(errno));
-            } else
-                chdir(getpwuid(getuid())->pw_dir);
+    if (!strcmp("cd", argv[0])) {
+        if (!argv[1]) {
+            chdir(getpwuid(getuid())->pw_dir);
             return 1;
         }
+        if (chdir(argv[1]) == -1)
+            fprintf(stderr, "%s: cd: %s: %s\n", getenv("SHELL"), argv[1],
+                    strerror(errno));
+        return 1;
+    }
     return 0;
 }
 
